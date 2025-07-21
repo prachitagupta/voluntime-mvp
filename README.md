@@ -1,36 +1,92 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌱 Voluntime – Mentorship Made Simple
 
-## Getting Started
+**Voluntime** is a volunteer-based mentorship platform where anyone can sign up as a mentor or mentee and connect for knowledge sharing. Built with **Next.js App Router**, **Tailwind CSS**, and **Supabase**, it offers a clean, scalable foundation for peer-to-peer mentorship.
 
-First, run the development server:
+---
 
+## ✨ Features
+
+- 🔐 Supabase Auth (Sign Up & Log In)
+- 🧑‍🏫 Mentor directory with skills and brief intros
+- 🗓 Book a session with a mentor
+- 📋 Mentor registration form with availability, expertise, and preferences
+- 🎨 Responsive UI using Tailwind CSS
+- ⚙️ Next.js App Router with SSR & server/client components
+
+---
+
+## 📦 Tech Stack
+
+- **Frontend**: Next.js (App Router)
+- **Styling**: Tailwind CSS
+- **Auth & DB**: Supabase
+- **Hosting**: Vercel (recommended)
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone the repo
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/yourusername/voluntime.git
+cd voluntime
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Set up environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Create a `.env.local` file in the root folder:
 
-## Learn More
+```env
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+```
 
-To learn more about Next.js, take a look at the following resources:
+> You can find these in your Supabase project settings.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 4. Run the development server
+```bash
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Open [http://localhost:3000](http://localhost:3000) to view the app.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## 🧾 Project Structure (Simplified)
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```
+/app
+  /mentor
+    /[id]          → Dynamic mentor detail page
+    /signup        → Mentor signup form
+  /login           → Login page
+  /signup          → Role selection (mentor or mentee)
+  /dashboard       → (Coming soon)
+
+/components        → Reusable UI components
+/lib               → Supabase client setup
+/mock              → Static mock data (for development)
+```
+
+---
+
+## 📄 License
+
+MIT — free for personal and commercial use.
+
+---
+
+## 🌐 Live Demo
+
+🚧 Coming soon at [https://voluntime.vercel.app](https://voluntime.vercel.app)
+
+---
+
+## 🤝 Contributing
+
+This is an MVP in progress — pull requests and ideas are welcome. Fork it, build your own, or suggest improvements.
