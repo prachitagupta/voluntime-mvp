@@ -2,8 +2,28 @@
 
 import { useState } from 'react';
 
+interface MentorFormData {
+    fullName: string;
+    email: string;
+    phone: string;
+    linkedIn: string;
+    expertise: string[];
+    experience: string;
+    title: string;
+    company: string;
+    availability: string;
+    communication: string;
+    timezone: string;
+    bio: string;
+    reason: string;
+    menteeLevel: string;
+    charges: boolean;
+    termsAccepted: boolean;
+    privacyAccepted: boolean;
+  }
+
 export default function MentorSignupPage() {
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<MentorFormData>({
         fullName: '',
         email: '',
         phone: '',
@@ -24,7 +44,10 @@ export default function MentorSignupPage() {
     });
 
     const [expertiseInput, setExpertiseInput] = useState('');
-    const update = (field: keyof typeof formData, value: any) => setFormData({ ...formData, [field]: value });
+    const update = <K extends keyof MentorFormData>(field: K, value: MentorFormData[K]) => {
+        setFormData({ ...formData, [field]: value });
+      };
+      
     const addExpertise = () => {
         if (expertiseInput.trim()) {
             update('expertise', [...formData.expertise, expertiseInput.trim()]);
