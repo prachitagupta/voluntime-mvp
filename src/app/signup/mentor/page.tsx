@@ -1,59 +1,79 @@
 'use client';
 
 import { useState } from 'react';
+import { timezones } from '@/lib/timezone';
+import { supabase } from '@/lib/supabaseClient';
 
 interface MentorFormData {
-    fullName: string;
+    full_name: string;
     email: string;
-    phone: string;
-    linkedIn: string;
+    linked_in: string;
     expertise: string[];
     experience: string;
-    title: string;
-    company: string;
-    availability: string;
-    communication: string;
     timezone: string;
     bio: string;
-    reason: string;
-    menteeLevel: string;
-    charges: boolean;
-    termsAccepted: boolean;
-    privacyAccepted: boolean;
-  }
+    terms_accepted: boolean;
+    privacy_accepted: boolean;
+}
 
 export default function MentorSignupPage() {
     const [formData, setFormData] = useState<MentorFormData>({
-        fullName: '',
+        full_name: '',
         email: '',
-        phone: '',
-        linkedIn: '',
+        linked_in: '',
         expertise: [],
         experience: '',
-        title: '',
-        company: '',
-        availability: '',
-        communication: '',
         timezone: '',
         bio: '',
-        reason: '',
-        menteeLevel: '',
-        charges: false,
-        termsAccepted: false,
-        privacyAccepted: false,
+        terms_accepted: false,
+        privacy_accepted: false,
     });
 
     const [expertiseInput, setExpertiseInput] = useState('');
+    const [submitting, setSubmitting] = useState(false);
+    const [success, setSuccess] = useState(false);
+    const [error, setError] = useState('');
+
     const update = <K extends keyof MentorFormData>(field: K, value: MentorFormData[K]) => {
         setFormData({ ...formData, [field]: value });
-      };
-      
+    };
+
     const addExpertise = () => {
         if (expertiseInput.trim()) {
             update('expertise', [...formData.expertise, expertiseInput.trim()]);
             setExpertiseInput('');
         }
     };
+
+    const handleSubmit = async () => {
+        setSubmitting(true);
+        setError('');
+        setSuccess(false);
+
+        const { terms_accepted, privacy_accepted, ...dataToSubmit } = formData;
+
+    
+        const { error } = await supabase.from('mentors').insert([dataToSubmit]);
+    
+        if (error) {
+          setError(error.message);
+        } else {
+          setSuccess(true);
+          setFormData({
+            full_name: '',
+            email: '',
+            linked_in: '',
+            expertise: [],
+            experience: '',
+            timezone: '',
+            terms_accepted: false,
+            privacy_accepted: false,
+            bio: '',
+          });
+        }
+        setSubmitting(false);
+      };
+    
 
     return (
         <div className="max-w-2xl mx-auto px-6 py-10 bg-white rounded-lg shadow">
@@ -62,10 +82,9 @@ export default function MentorSignupPage() {
             {/* Personal Information */}
             <div className="space-y-4 mb-6">
                 {[
-                    ['Full Name *', 'fullName'],
-                    ['Email Address *', 'email'],
-                    ['Phone Number', 'phone'],
-                    ['LinkedIn Profile URL *', 'linkedIn'],
+                    ['Full Name', 'full_name'],
+                    ['Email Address', 'email'],
+                    ['LinkedIn Profile URL', 'linked_in'],
                 ].map(([label, key]) => (
                     <div className="space-y-1" key={key}>
                         <label className="text-sm font-medium text-gray-700">{label}</label>
@@ -82,7 +101,7 @@ export default function MentorSignupPage() {
             {/* Professional Details */}
             <div className="space-y-4 mb-6">
                 <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-700">Areas of Expertise *</label>
+                    <label className="text-sm font-medium text-gray-700">Areas of Expertise</label>
                     <input
                         value={expertiseInput}
                         onChange={(e) => setExpertiseInput(e.target.value)}
@@ -96,118 +115,52 @@ export default function MentorSignupPage() {
                         ))}
                     </div>
                 </div>
-                {[
-                    ['Years of Experience *', 'experience'],
-                    ['Current Job Title', 'title'],
-                    ['Current Company', 'company'],
-                ].map(([label, key]) => (
-                    <div className="space-y-1" key={key}>
-                        <label className="text-sm font-medium text-gray-700">{label}</label>
-                        <input
-                            type="text"
-                            value={String(formData[key as keyof typeof formData] ?? '')}
-                            onChange={(e) => update(key as keyof typeof formData, e.target.value)}
-                            className="w-full border border-gray-300 px-4 py-2 rounded"
-                        />
-                    </div>
-                ))}
-            </div>
-
-            {/* Availability */}
-            <div className="space-y-4 mb-6">
-                {[
-                    ['Availability', 'availability', ['Weekdays', 'Weekends', 'Evenings', 'Flexible']],
-                    ['Preferred Communication Method', 'communication', ['Video Call', 'Chat', 'Email']],
-                    ['Time Zone *', 'timezone', null],
-                ].map((item) => {
-                    const [label, key, options] = item as [string, string, string[] | null];
-                    return (
-                        <div className="space-y-1" key={key}>
-                            <label className="text-sm font-medium text-gray-700">{label}</label>
-                            {options ? (
-                                <select
-                                    value={String(formData[key as keyof typeof formData] ?? '')}
-                                    onChange={(e) => update(key as keyof typeof formData, e.target.value)}
-                                    className="w-full border border-gray-300 px-4 py-2 rounded"
-                                >
-                                    <option value="">Select</option>
-                                    {Array.isArray(options) && options.map((o) => (
-                                        <option key={o} value={o}>{o}</option>
-                                    ))}
-                                </select>
-                            ) : (
-                                <input
-                                    type="text"
-                                    value={String(formData[key as keyof typeof formData] ?? '')}
-                                    onChange={(e) => update(key as keyof typeof formData, e.target.value)}
-                                    className="w-full border border-gray-300 px-4 py-2 rounded"
-                                />
-                            )}
-                        </div>
-                    );
-                })}
-            </div>
-
-            {/* Additional Information */}
-            <div className="space-y-4 mb-6">
-                {[
-                    ['Short Bio *', 'bio'],
-                    ['Why do you want to be a mentor?', 'reason'],
-                ].map(([label, key]) => (
-                    <div className="space-y-1" key={key}>
-                        <label className="text-sm font-medium text-gray-700">{label}</label>
-                        <textarea
-                            value={String(formData[key as keyof typeof formData] ?? '')}
-                            onChange={(e) => update(key as keyof typeof formData, e.target.value)}
-                            className="w-full border border-gray-300 px-4 py-2 rounded h-24"
-                        />
-                    </div>
-                ))}
 
                 <div className="space-y-1">
-                    <label className="text-sm font-medium text-gray-700">Preferred Mentee Level</label>
+                    <label className="text-sm font-medium text-gray-700">Years of Experience (optional)</label>
+                    <input
+                        type="text"
+                        value={formData.experience}
+                        onChange={(e) => update('experience', e.target.value)}
+                        className="w-full border border-gray-300 px-4 py-2 rounded"
+                    />
+                </div>
+
+                <div className="space-y-1">
+                    <label className="text-sm font-medium text-gray-700">Time Zone</label>
                     <select
-                        value={String(formData.menteeLevel ?? '')}
-                        onChange={(e) => update('menteeLevel', e.target.value)}
+                        value={formData.timezone}
+                        onChange={(e) => update('timezone', e.target.value)}
                         className="w-full border border-gray-300 px-4 py-2 rounded"
                     >
-                        <option value="">Select</option>
-                        <option value="Student">Student</option>
-                        <option value="Early Career">Early Career</option>
-                        <option value="Mid Career">Mid Career</option>
+                        <option value="">Select your timezone</option>
+                        {timezones.map((tz) => (
+                            <option key={tz} value={tz}>{tz}</option>
+                        ))}
                     </select>
                 </div>
+
+                <div className="space-y-1">
+                    <label className="text-sm font-medium text-gray-700">Short Bio</label>
+                    <textarea
+                        value={formData.bio}
+                        onChange={(e) => update('bio', e.target.value)}
+                        className="w-full border border-gray-300 px-4 py-2 rounded h-24"
+                    />
+                </div>
             </div>
-            <div className="border border-gray-300 rounded-xl px-6 py-4 mb-6 flex items-center justify-between">
-  <label htmlFor="charges" className="text-sm font-medium text-gray-700">
-    Do you charge for mentorship?
-  </label>
-  <button
-    type="button"
-    onClick={() => update('charges', !formData.charges)}
-    className={`w-11 h-6 flex items-center rounded-full p-1 transition duration-300 ease-in-out ${
-      formData.charges ? 'bg-blue-600' : 'bg-gray-300'
-    }`}
-  >
-    <div
-      className={`bg-white w-4 h-4 rounded-full shadow-md transform transition duration-300 ease-in-out ${
-        formData.charges ? 'translate-x-5' : 'translate-x-0'
-      }`}
-    />
-  </button>
-</div>
 
             {/* Terms */}
             <div className="space-y-2 mb-6">
                 {[
-                    ['I accept the terms and conditions *', 'termsAccepted'],
-                    ['I accept the privacy policy *', 'privacyAccepted'],
+                    ['I accept the terms and conditions', 'terms_accepted'],
+                    ['I accept the privacy policy', 'privacy_accepted'],
                 ].map(([label, key]) => (
                     <label className="flex items-center gap-2" key={key}>
                         <input
                             type="checkbox"
-                            checked={Boolean(formData[key as keyof typeof formData])}
-                            onChange={(e) => update(key as keyof typeof formData, e.target.checked)}
+                            checked={Boolean(formData[key as keyof MentorFormData])}
+                            onChange={(e) => update(key as keyof MentorFormData, e.target.checked)}
                         />
                         {label}
                     </label>
@@ -215,11 +168,15 @@ export default function MentorSignupPage() {
             </div>
 
             <button
-                disabled={!formData.termsAccepted || !formData.privacyAccepted}
-                className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-            >
-                Register as Mentor
-            </button>
+        onClick={handleSubmit}
+        disabled={!formData.full_name || !formData.email || !formData.linked_in || !formData.expertise.length || !formData.timezone || !formData.bio || !formData.terms_accepted || !formData.privacy_accepted || submitting}
+        className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+      >
+        {submitting ? 'Submitting...' : 'Register as Mentor'}
+      </button>
+
+      {success && <p className="text-green-600 text-sm mt-4">✅ Registration successful!</p>}
+      {error && <p className="text-red-600 text-sm mt-4">⚠️ {error}</p>}
         </div>
     );
 }
