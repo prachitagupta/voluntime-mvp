@@ -4,8 +4,28 @@ import { useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { timezones } from '@/lib/timezone';
 
+interface MenteeFormData {
+  full_name: string;
+  email: string;
+  phone?: string;
+  linked_in: string;
+  current_role?: string;
+  current_company?: string;
+  education_level: string;
+  experience?: string;
+  guidance_type: string;
+  mentorship_topic: string;
+  communication_method?: string;
+  timezone: string;
+  bio: string;
+  goals?: string;
+  referral_source?: string;
+  terms_accepted: boolean;
+  privacy_accepted: boolean;
+}
+
 export default function MenteeSignupPage() {
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<MenteeFormData>({
     full_name: '',
     email: '',
     phone: '',
@@ -25,11 +45,7 @@ export default function MenteeSignupPage() {
     privacy_accepted: false,
   });
 
-  const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState('');
-
-  const update = (field: string, value: string | number | boolean) => {    
+  const update = <K extends keyof MenteeFormData>(field: K, value: MenteeFormData[K]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -47,6 +63,10 @@ export default function MenteeSignupPage() {
       formData.privacy_accepted
     );
   };
+
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
 
   const handleSubmit = async () => {
     setSubmitting(true);
@@ -104,7 +124,7 @@ export default function MenteeSignupPage() {
             <input
               type="text"
               value={String(formData[key as keyof typeof formData] ?? '')}
-              onChange={(e) => update(String(key), e.target.value)}
+              onChange={(e) => update(key as keyof typeof formData, e.target.value)}
               className="w-full border border-gray-300 px-4 py-2 rounded"
             />
           </div>
@@ -122,7 +142,7 @@ export default function MenteeSignupPage() {
             <input
               type="text"
               value={String(formData[key as keyof typeof formData] ?? '')}
-              onChange={(e) => update(key, e.target.value)}
+              onChange={(e) => update(key as keyof typeof formData, e.target.value)}
               className="w-full border border-gray-300 px-4 py-2 rounded"
             />
           </div>
