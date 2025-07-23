@@ -29,7 +29,7 @@ export default function MenteeSignupPage() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
 
-  const update = (field: string, value: any) => {
+  const update = (field: string, value: string | number | boolean) => {    
     setFormData((prev) => ({ ...prev, [field]: value }));
   };
 
