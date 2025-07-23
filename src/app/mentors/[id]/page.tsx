@@ -3,10 +3,11 @@
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { useParams } from 'next/navigation';
+import { Mentor } from '@/types/Mentor';
 
 export default function MentorProfilePage() {
   const { id } = useParams();
-  const [mentor, setMentor] = useState<any>(null);
+  const [mentor, setMentor] = useState<Mentor | null>(null);
   const [form, setForm] = useState({
     name: '',
     email: '',
