@@ -11,6 +11,7 @@ interface MentorFormData {
     expertise: string[];
     experience: string;
     timezone: string;
+    title: string;
     bio: string;
     terms_accepted: boolean;
     privacy_accepted: boolean;
@@ -24,6 +25,7 @@ export default function MentorSignupPage() {
         expertise: [],
         experience: '',
         timezone: '',
+        title: '',
         bio: '',
         terms_accepted: false,
         privacy_accepted: false,
@@ -52,28 +54,29 @@ export default function MentorSignupPage() {
 
         const { terms_accepted, privacy_accepted, ...dataToSubmit } = formData;
 
-    
+
         const { error } = await supabase.from('mentors').insert([dataToSubmit]);
-    
+
         if (error) {
-          setError(error.message);
+            setError(error.message);
         } else {
-          setSuccess(true);
-          setFormData({
-            full_name: '',
-            email: '',
-            linked_in: '',
-            expertise: [],
-            experience: '',
-            timezone: '',
-            terms_accepted: false,
-            privacy_accepted: false,
-            bio: '',
-          });
+            setSuccess(true);
+            setFormData({
+                full_name: '',
+                email: '',
+                linked_in: '',
+                expertise: [],
+                experience: '',
+                timezone: '',
+                terms_accepted: false,
+                privacy_accepted: false,
+                title: '',
+                bio: '',
+            });
         }
         setSubmitting(false);
-      };
-    
+    };
+
 
     return (
         <div className="max-w-2xl mx-auto px-6 py-10 bg-white rounded-lg shadow">
@@ -100,6 +103,17 @@ export default function MentorSignupPage() {
 
             {/* Professional Details */}
             <div className="space-y-4 mb-6">
+                <div className="space-y-1">
+                    <label className="text-sm font-medium text-gray-700">Title</label>
+                    <input
+                        type="text"
+                        value={formData.title}
+                        onChange={(e) => update('title', e.target.value)}
+                        placeholder="e.g. Product Designer at Adobe"
+                        className="w-full border border-gray-300 px-4 py-2 rounded"
+                    />
+                </div>
+
                 <div className="space-y-1">
                     <label className="text-sm font-medium text-gray-700">Areas of Expertise</label>
                     <input
@@ -168,15 +182,15 @@ export default function MentorSignupPage() {
             </div>
 
             <button
-        onClick={handleSubmit}
-        disabled={!formData.full_name || !formData.email || !formData.linked_in || !formData.expertise.length || !formData.timezone || !formData.bio || !formData.terms_accepted || !formData.privacy_accepted || submitting}
-        className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50"
-      >
-        {submitting ? 'Submitting...' : 'Register as Mentor'}
-      </button>
+                onClick={handleSubmit}
+                disabled={!formData.full_name || !formData.email || !formData.linked_in || !formData.title || !formData.expertise.length || !formData.timezone || !formData.bio || !formData.terms_accepted || !formData.privacy_accepted || submitting}
+                className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:opacity-50"
+            >
+                {submitting ? 'Submitting...' : 'Register as Mentor'}
+            </button>
 
-      {success && <p className="text-green-600 text-sm mt-4">✅ Registration successful!</p>}
-      {error && <p className="text-red-600 text-sm mt-4">⚠️ {error}</p>}
+            {success && <p className="text-green-600 text-sm mt-4">✅ Registration successful!</p>}
+            {error && <p className="text-red-600 text-sm mt-4">⚠️ {error}</p>}
         </div>
     );
 }

@@ -1,8 +1,9 @@
 export interface Mentor {
-    id: string;
-    name: string;
-    available: string;
-    skills: string[];
-    intro: string;
-    avatar?: string;
-  }
+  id: string;
+  full_name: string;
+  expertise: string[];
+  title: string;
+  bio: string;
+  linked_in: string;
+  timezone: string;
+}

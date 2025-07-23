@@ -1,61 +1,72 @@
 'use client';
+
 import { useRouter } from 'next/navigation';
 import { Mentor } from '@/types/Mentor';
-import Image from 'next/image';
+import { FaLinkedin } from 'react-icons/fa';
 
 export default function MentorCard({ mentor }: { mentor: Mentor }) {
   const router = useRouter();
 
+  const initials = mentor.full_name
+    .split(' ')
+    .map((n) => n[0])
+    .join('')
+    .slice(0, 2)
+    .toUpperCase();
+
   return (
-    <div className="bg-white shadow p-4 rounded-md flex items-start gap-4 hover:shadow transition duration-200">
+    <div className="bg-white shadow-md hover:shadow-lg transition rounded-xl p-5 flex gap-4 items-start border border-gray-100">
       {/* Avatar */}
-      {/* <img
-        src={mentor.avatar}
-        alt={mentor.name}
-        className="w-12 h-12 rounded-full object-cover shadow-md"
-      /> */}
+      <div className="w-14 h-14 bg-gray-100 text-blue-700 flex items-center justify-center rounded-full font-semibold text-lg shadow-inner">
+        {initials}
+      </div>
 
-    <Image
-      src={mentor.avatar || '/default-avatar.png'}
-      alt={mentor.name}
-      width={80}
-      height={80}
-      className="rounded-full"
-    />
-
-      {/* Content */}
-      <div className="flex-1 space-y-2">
-        <div>
-          <h3 className="text-lg font-semibold text-blue-700">{mentor.name}</h3>
-          <p className="text-xs text-gray-500">Available: {mentor.available}</p>
+      {/* Info */}
+      <div className="flex-1 space-y-1.5">
+        <div className="flex items-center gap-2">
+          <h3 className="text-lg font-semibold text-gray-800">{mentor.full_name}</h3>
+          {mentor.linked_in && (
+            <a
+              href={mentor.linked_in}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 text-sm hover:underline flex items-center gap-1"
+            >
+              <FaLinkedin className="text-blue-500" />
+            </a>
+          )}
         </div>
+        <p className="text-sm text-gray-700 font-medium">{mentor.title}</p>
+        <p className="text-sm text-gray-500">
+          {mentor.bio.split(' ').length > 120
+            ? mentor.bio.split(' ').slice(0, 120).join(' ') + '...'
+            : mentor.bio}
+        </p>
 
-        <p className="text-sm text-gray-600 line-clamp-2">{mentor.intro}</p>
-
-        <div className="flex flex-wrap gap-2">
-          {mentor.skills.slice(0, 2).map((skill: string) => (
+        {/* Tags */}
+        <div className="flex flex-wrap gap-2 pt-2">
+          {mentor.expertise.slice(0, 2).map((skill) => (
             <span
               key={skill}
-              className="bg-blue-100 text-blue-700 text-xs font-medium px-2 py-1 rounded-full"
+              className="bg-gray-100 text-gray-700 text-xs px-2 py-1 rounded-full"
             >
               {skill}
             </span>
           ))}
-          {mentor.skills.length > 2 && (
+          {mentor.expertise.length > 2 && (
             <span className="text-xs text-gray-400">
-              +{mentor.skills.length - 2} more
+              +{mentor.expertise.length - 2} more
             </span>
           )}
         </div>
 
-        <div className="flex gap-3 pt-2">
-          <button
-            onClick={() => router.push(`/mentors/${mentor.id}`)}
-            className="bg-blue-500 text-white text-xs px-4 py-1.5 rounded hover:bg-blue-600"
-          >
-            View Profile
-          </button>
-        </div>
+        {/* Button */}
+        <button
+          onClick={() => router.push(`/mentors/${mentor.id}`)}
+          className="mt-3 inline-block bg-blue-600 text-white text-sm px-4 py-2 rounded-md hover:bg-blue-700 transition"
+        >
+          View Profile
+        </button>
       </div>
     </div>
   );
