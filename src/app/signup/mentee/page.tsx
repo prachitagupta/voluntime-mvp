@@ -135,7 +135,7 @@ export default function MenteeSignupPage() {
       <div className="space-y-4 mb-6">
         {[
           ['Current Role/Job Title', 'current_role'],
-          ['current_company/Institution Name', 'current_company'],
+          ['Current Company/Institution Name', 'current_company'],
         ].map(([label, key]) => (
           <div className="space-y-1" key={key}>
             <label className="text-sm font-medium text-gray-700">{label} (optional)</label>
