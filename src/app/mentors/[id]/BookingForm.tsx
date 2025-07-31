@@ -1,8 +1,9 @@
 'use client';
 
+import { Mentor } from '@/types/Mentor';
 import { useState } from 'react';
 
-export default function BookingForm({ mentor }: { mentor: any }) {
+export default function BookingForm({ mentor }: { mentor: Mentor }) {
   const [form, setForm] = useState({
     name: '',
     email: '',
