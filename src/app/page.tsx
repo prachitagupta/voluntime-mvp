@@ -3,7 +3,7 @@ import Link from 'next/link';
 export default function Home() {
   return (
     <section className="text-center space-y-6 mt-10">
-      <h1 className="text-5xl font-extrabold text-black-900">Welcome to Voluntime</h1>
+      <h1 className="text-5xl font-extrabold text-blue-700">Welcome to Voluntime</h1>
       <p className="text-lg text-gray-600 max-w-xl mx-auto">
         A community-powered platform where mentors give their time to help you grow.
         Browse available mentors and book a free session.

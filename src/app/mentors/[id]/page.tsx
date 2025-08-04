@@ -1,14 +1,13 @@
 import { use } from 'react';
 import BookingForm from './BookingForm';
-import { fetchMentorById } from '@/lib/data';
+import { getMentorById } from '@/lib/data';
 
 
 export default function MentorProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
+  const mentor = use(getMentorById(id));
 
-  const mentor = use(fetchMentorById(id)); // Waits for the async call to finish
-
-  const initials = mentor.full_name
+  const initials = mentor!.full_name
     .split(' ')
     .map((n: string) => n[0])
     .join('')
@@ -30,11 +29,11 @@ export default function MentorProfilePage({ params }: { params: Promise<{ id: st
           {initials}
         </div>
         <div>
-          <h2 className="text-2xl font-bold text-blue-700">{mentor.full_name}</h2>
-          <p className="text-sm text-gray-600 font-medium">{mentor.title}</p>
+          <h2 className="text-2xl font-bold text-blue-700">{mentor!.full_name}</h2>
+          <p className="text-sm text-gray-600 font-medium">{mentor!.title}</p>
           <p className="text-sm text-gray-500"> Experience:  
-            {mentor.experience
-              ? ` ${mentor.experience} year${mentor.experience === '1' ? '' : 's'}`
+            {mentor!.experience
+              ? ` ${mentor!.experience} year${mentor!.experience === '1' ? '' : 's'}`
               : 'Experience not specified'}
           </p>
         </div>
@@ -43,14 +42,14 @@ export default function MentorProfilePage({ params }: { params: Promise<{ id: st
       {/* Intro */}
       <div>
         <h3 className="text-lg font-semibold text-gray-800 mb-2">About</h3>
-        <p className="text-sm text-gray-700">{mentor.bio}</p>
+        <p className="text-sm text-gray-700">{mentor!.bio}</p>
       </div>
 
       {/* Skills */}
       <div>
         <h3 className="text-lg font-semibold text-gray-800 mb-2">Skills</h3>
         <div className="flex flex-wrap gap-2">
-          {mentor.expertise.map((skill: string) => (
+          {mentor!.expertise.map((skill: string) => (
             <span
               key={skill}
               className="bg-blue-100 text-blue-700 text-sm font-medium px-3 py-1 rounded-full"
@@ -77,7 +76,7 @@ export default function MentorProfilePage({ params }: { params: Promise<{ id: st
 
   
       {/* Booking Form */}
-      <BookingForm mentor={mentor} />
+      <BookingForm mentor={mentor!} />
     </div>
   );
 }
