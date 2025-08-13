@@ -39,7 +39,7 @@ export default function MenteeDashboard() {
         id: b.id,
         topic: b.topic,
         date_time: b.date_time,
-        mentorName: b.mentorName,
+        mentorName: b.mentor?.full_name || 'Unknown Mentor',
         status: b.status as BookingStatus,
       }));
       setBookings(formattedBookings);
