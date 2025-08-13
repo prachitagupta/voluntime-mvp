@@ -1,4 +1,4 @@
-// components/dashboard/MentorSidebar.tsx
+// components/dashboard/MenteeSidebar.tsx
 
 'use client';
 
@@ -10,24 +10,24 @@ export default function MentorSidebar() {
   const pathname = usePathname();
 
   const links = [
-    { name: 'Dashboard', href: '/dashboard/mentor' },
-    { name: 'My Bookings', href: '/dashboard/mentor/bookings' },
-    { name: 'Edit Profile', href: '/dashboard/mentor/profile' },
+    { name: 'Dashboard', href: '/dashboard' },
+    { name: 'My Bookings', href: '/dashboard/bookings' },
+    { name: 'Profile', href: '/dashboard/profile' },
   ];
 
   return (
-    <div>
-      <div className="mb-8 text-xl font-bold text-blue-600">Voluntime</div>
-      <nav className="space-y-3">
+    <div className="h-full p-6">
+      
+      <nav className="space-y-2">
         {links.map((link) => (
           <Link
             key={link.href}
             href={link.href}
             className={clsx(
-              'block px-4 py-2 rounded-md text-sm font-medium',
+              'flex items-center px-4 py-3 rounded-lg text-sm font-medium transition-colors duration-200',
               pathname === link.href
-                ? 'bg-blue-100 text-blue-700'
-                : 'text-gray-700 hover:bg-gray-100'
+                ? 'bg-blue-50 text-blue-700 border-l-4 border-blue-500'
+                : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
             )}
           >
             {link.name}

@@ -149,7 +149,7 @@ export default function MentorSignupPage() {
                     >
                         <option value="">Select your timezone</option>
                         {timezones.map((tz) => (
-                            <option key={tz} value={tz}>{tz}</option>
+                            <option key={tz.value} value={tz.value}>{tz.label}</option>
                         ))}
                     </select>
                 </div>

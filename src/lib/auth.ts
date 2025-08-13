@@ -24,5 +24,5 @@
 
 export async function getUserRole(): Promise<'mentor' | 'mentee'> {
     // TODO: Replace with real auth logic (from Supabase, Clerk, Firebase, etc.)
-    return 'mentee'; // or 'mentor' (hardcoded for now)
+    return 'mentor'; // or 'mentor' (hardcoded for now)
   }
