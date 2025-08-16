@@ -1,8 +1,7 @@
-import { createMiddlewareClient } from '@supabase/auth-helpers-nextjs';
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
-export async function middleware(req: NextRequest) {
+export async function middleware() {
   const res = NextResponse.next();
 
   // Temporarily disabled to test if this is causing the cookies error

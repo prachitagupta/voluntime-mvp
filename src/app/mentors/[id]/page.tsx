@@ -1,7 +1,8 @@
+'use client';
+
 import { use } from 'react';
 import BookingForm from './BookingForm';
 import { getMentorById } from '@/lib/data';
-
 
 export default function MentorProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);

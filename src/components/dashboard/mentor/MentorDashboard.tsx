@@ -132,7 +132,7 @@ export default function MentorDashboard() {
         {loading ? (
           <p className="text-gray-500">Loading…</p>
         ) : pending.length === 0 ? (
-          <p className="text-gray-500">You're all caught up ✨</p>
+          <p className="text-gray-500">You&apos;re all caught up ✨</p>
         ) : (
           <div className="space-y-3">
             {pending.map((b) => (
@@ -166,7 +166,7 @@ export default function MentorDashboard() {
 
       {/* Today */}
       <section className="bg-white shadow rounded-lg p-6">
-        <h2 className="text-lg font-semibold mb-4">Today's schedule</h2>
+        <h2 className="text-lg font-semibold mb-4">Today&apos;s schedule</h2>
         {today.length === 0 ? (
           <p className="text-gray-500">No sessions today.</p>
         ) : (

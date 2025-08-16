@@ -28,9 +28,6 @@ export default function DashboardLayoutClient({ children }: { children: ReactNod
   useEffect(() => {
     const checkUserRole = async () => {
       try {
-        // First check if we have a session
-        const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-        
         const user = await getCurrentUser();
         
         if (!user) {
@@ -40,7 +37,7 @@ export default function DashboardLayoutClient({ children }: { children: ReactNod
         }
 
         // Check if user is a mentor
-        const { data: mentor, error: mentorError } = await supabase
+        const { data: mentor } = await supabase
           .from('mentors')
           .select('id')
           .eq('id', user.id)
@@ -50,7 +47,7 @@ export default function DashboardLayoutClient({ children }: { children: ReactNod
           setRole('mentor');
         } else {
           // Check if user is a mentee
-          const { data: mentee, error: menteeError } = await supabase
+          const { data: mentee } = await supabase
             .from('mentees')
             .select('id')
             .eq('id', user.id)
