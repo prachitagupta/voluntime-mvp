@@ -1,28 +1,20 @@
-// lib/auth.ts
+// src/lib/auth.ts
+'use client';
 
-// import { cookies } from 'next/headers';
-// import { supabase } from './supabaseClient';
+import { supabase } from '@/lib/supabaseClient';
 
-// export async function getCurrentUser() {
-//   const cookieStore = cookies();
-//   const token = cookieStore.get('sb-access-token')?.value;
-//   if (!token) return null;
-
-//   const { data, error } = await supabase.auth.getUser(token);
-//   if (error) return null;
-
-//   return data.user;
-// }
-
-// export async function getUserRole(): Promise<'mentor' | 'mentee' | null> {
-//   const user = await getCurrentUser();
-//   if (!user) return null;
-
-//   // Example: role stored in metadata
-//   return user.user_metadata?.role ?? null;
-// }
-
-export async function getUserRole(): Promise<'mentor' | 'mentee'> {
-    // TODO: Replace with real auth logic (from Supabase, Clerk, Firebase, etc.)
-    return 'mentor'; // or 'mentor' (hardcoded for now)
+export async function getCurrentUser() {
+  try {
+    const { data: { user }, error } = await supabase.auth.getUser();
+    
+    if (error) {
+      console.error('Error getting user:', error);
+      return null;
+    }
+    
+    return user;
+  } catch (error) {
+    console.error('Exception in getCurrentUser:', error);
+    return null;
   }
+}

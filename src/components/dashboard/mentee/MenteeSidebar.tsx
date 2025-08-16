@@ -17,6 +17,10 @@ export default function MenteeSidebar() {
 
   return (
     <div className="h-full p-6">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold text-blue-600">Voluntime</h1>
+        <p className="text-sm text-gray-500 mt-1">Mentee Dashboard</p>
+      </div>
       
       <nav className="space-y-2">
         {links.map((link) => (

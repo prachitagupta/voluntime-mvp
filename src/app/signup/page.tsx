@@ -1,10 +1,19 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import { GraduationCap, Sailboat } from 'lucide-react';
+import { loginWithGoogle } from '@/lib/loginWithGoogle';
 
 export default function SignupPage() {
-  const router = useRouter();
+
+  const handleMentorSignup = async () => {
+    localStorage.setItem('voluntime_role', 'mentor');
+    await loginWithGoogle();
+  };
+
+  const handleMenteeSignup = async () => {
+    localStorage.setItem('voluntime_role', 'mentee');
+    await loginWithGoogle();
+  };
 
   return (
     <div className="min-h-screen py-16 px-6">
@@ -32,7 +41,7 @@ export default function SignupPage() {
             <li>Make a meaningful impact</li>
           </ul>
           <button
-            onClick={() => router.push('/signup/mentor')}
+            onClick={handleMentorSignup}
             className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
           >
             Create Mentor Account
@@ -55,7 +64,7 @@ export default function SignupPage() {
             <li>Accelerate your growth</li>
           </ul>
           <button
-            onClick={() => router.push('/signup/mentee')}
+            onClick={handleMenteeSignup}
             className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition"
           >
             Create Mentee Account

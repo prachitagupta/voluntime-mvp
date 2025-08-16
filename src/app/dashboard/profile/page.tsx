@@ -1,14 +1,14 @@
-// app/dashboard/profile/page.tsx
+'use client';
 
 import MentorProfile from '@/components/dashboard/mentor/MentorProfile';
 import MenteeProfile from '@/components/dashboard/mentee/MenteeProfile';
-import { getUserRole } from '@/lib/auth';
+import { useUserRole } from '../DashboardLayoutClient';
 
-export default async function ProfilePage() {
-  const role = await getUserRole();
+export default function ProfilePage() {
+  const role = useUserRole();
 
   if (role === 'mentor') return <MentorProfile />;
   if (role === 'mentee') return <MenteeProfile />;
 
-  return <p className="text-red-500">Unable to detect user role.</p>;
+  return <div className="text-center py-8">Loading...</div>;
 }

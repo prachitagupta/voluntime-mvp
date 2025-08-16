@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from 'react';
 import { getMentorById, getMentorDashboardKpis, getMentorPending, getMentorToday, getMentorUpcoming, updateBookingStatus } from '@/lib/data';
+import { getCurrentUser } from '@/lib/auth';
 
 type BookingRow = {
   id: string;
@@ -12,9 +13,8 @@ type BookingRow = {
   meeting_url?: string | null;
 };
 
-const HARDCODED_MENTOR_ID = '04213984-8b0a-4f10-8882-f2e460648554';
-
 export default function MentorDashboard() {
+  const [mentorId, setMentorId] = useState<string | null>(null);
   const [mentorName, setMentorName] = useState('');
   const [mentorTZ, setMentorTZ] = useState('UTC');
   const [kpis, setKpis] = useState<{ pending: number; upcomingWeek: number; profilePercent: number }>({
@@ -28,17 +28,27 @@ export default function MentorDashboard() {
   useEffect(() => {
     const run = async () => {
       setLoading(true);
-      const mentor = await getMentorById(HARDCODED_MENTOR_ID);
+      
+      // Get current user ID
+      const user = await getCurrentUser();
+      if (!user) {
+        setLoading(false);
+        return;
+      }
+      
+      setMentorId(user.id);
+      
+      const mentor = await getMentorById(user.id);
       if (mentor) {
         setMentorName(mentor.full_name || 'Mentor');
         setMentorTZ(mentor.timezone || 'UTC');
       }
 
       const [kpiData, pendingData, todayData, upcomingData] = await Promise.all([
-        getMentorDashboardKpis(HARDCODED_MENTOR_ID),
-        getMentorPending(HARDCODED_MENTOR_ID),
-        getMentorToday(HARDCODED_MENTOR_ID),
-        getMentorUpcoming(HARDCODED_MENTOR_ID),
+        getMentorDashboardKpis(user.id),
+        getMentorPending(user.id),
+        getMentorToday(user.id),
+        getMentorUpcoming(user.id),
       ]);
 
       if (kpiData) setKpis(kpiData);
@@ -59,18 +69,24 @@ export default function MentorDashboard() {
     });
 
   const handleDecision = async (id: string, next: 'accepted' | 'rejected') => {
+    if (!mentorId) return;
+    
     // optimistic UI
     setPending((prev) => prev.filter((b) => b.id !== id));
     const { ok } = await updateBookingStatus(id, next);
     if (!ok) {
       // rollback: (simple approach: refetch pending)
-      const refetched = await getMentorPending(HARDCODED_MENTOR_ID);
+      const refetched = await getMentorPending(mentorId);
       setPending(refetched || []);
       alert('Failed to update booking. Please try again.');
     }
   };
 
   const profileCtaNeeded = useMemo(() => (kpis.profilePercent ?? 0) < 100, [kpis.profilePercent]);
+
+  if (!mentorId) {
+    return <div className="text-center py-8">Loading...</div>;
+  }
 
   return (
     <div className="space-y-8">
@@ -116,7 +132,7 @@ export default function MentorDashboard() {
         {loading ? (
           <p className="text-gray-500">Loading…</p>
         ) : pending.length === 0 ? (
-          <p className="text-gray-500">You’re all caught up ✨</p>
+          <p className="text-gray-500">You're all caught up ✨</p>
         ) : (
           <div className="space-y-3">
             {pending.map((b) => (
@@ -150,7 +166,7 @@ export default function MentorDashboard() {
 
       {/* Today */}
       <section className="bg-white shadow rounded-lg p-6">
-        <h2 className="text-lg font-semibold mb-4">Today’s schedule</h2>
+        <h2 className="text-lg font-semibold mb-4">Today's schedule</h2>
         {today.length === 0 ? (
           <p className="text-gray-500">No sessions today.</p>
         ) : (

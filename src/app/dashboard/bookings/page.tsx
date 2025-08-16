@@ -1,14 +1,14 @@
-// app/dashboard/bookings/page.tsx
+'use client';
+
 import MentorBookings from '@/components/dashboard/mentor/MentorBookings';
 import MenteeBookings from '@/components/dashboard/mentee/MenteeBookings';
+import { useUserRole } from '../DashboardLayoutClient';
 
-import { getUserRole } from '@/lib/auth';
-
-export default async function BookingsPage() {
-  const role = await getUserRole();
+export default function BookingsPage() {
+  const role = useUserRole();
 
   if (role === 'mentor') return <MentorBookings />;
   if (role === 'mentee') return <MenteeBookings />;
 
-  return <p className="text-red-500">Unable to detect user role.</p>;
+  return <div className="text-center py-8">Loading...</div>;
 }

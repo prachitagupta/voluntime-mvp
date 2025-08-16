@@ -3,18 +3,26 @@
 import { useState, useEffect } from 'react';
 import { getBookingsByMenteeId } from '@/lib/data';
 import { Booking, BookingStatus } from '@/types/Booking';
+import { getCurrentUser } from '@/lib/auth';
 
 const tabs = ['All', 'Upcoming', 'Past', 'Cancelled'];
 
 export default function MenteeBookings() {
+  const [menteeId, setMenteeId] = useState<string | null>(null);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [activeTab, setActiveTab] = useState('All');
 
-  const menteeId = '428f7689-225d-4287-8991-a6486e7e9989'; // TODO: remove hardcoded id after auth
-
   useEffect(() => {
     const fetchBookings = async () => {
-      const data = await getBookingsByMenteeId(menteeId);
+      // Get current user ID
+      const user = await getCurrentUser();
+      if (!user) {
+        return;
+      }
+      
+      setMenteeId(user.id);
+      
+      const data = await getBookingsByMenteeId(user.id);
 
       if (data && Array.isArray(data)) {
         const formatted = data.map((b) => ({
@@ -35,6 +43,10 @@ export default function MenteeBookings() {
     activeTab === 'All'
       ? bookings
       : bookings.filter((b) => b.status === activeTab.toLowerCase());
+
+  if (!menteeId) {
+    return <div className="text-center py-8">Loading...</div>;
+  }
 
   return (
     <div>

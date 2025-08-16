@@ -1,8 +1,9 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabaseClient';
 import { timezones } from '@/lib/timezone';
+import { useRouter } from 'next/navigation';
 
 interface MenteeFormData {
   full_name: string;
@@ -25,6 +26,7 @@ interface MenteeFormData {
 }
 
 export default function MenteeSignupPage() {
+  const router = useRouter();
   const [formData, setFormData] = useState<MenteeFormData>({
     full_name: '',
     email: '',
@@ -44,6 +46,16 @@ export default function MenteeSignupPage() {
     terms_accepted: false,
     privacy_accepted: false,
   });
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user?.email) {
+        setFormData((prev) => ({ ...prev, email: user.email! }));
+      }
+    };
+    fetchUser();
+  }, []);
 
   const update = <K extends keyof MenteeFormData>(field: K, value: MenteeFormData[K]) => {
     setFormData((prev) => ({ ...prev, [field]: value }));
@@ -67,39 +79,30 @@ export default function MenteeSignupPage() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
-
+  
   const handleSubmit = async () => {
     setSubmitting(true);
     setSuccess(false);
     setError('');
 
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      setError('No user session found.');
+      setSubmitting(false);
+      return;
+    }
+
     const { terms_accepted, privacy_accepted, ...dataToSubmit } = formData;
 
-    const { error } = await supabase.from('mentees').insert([dataToSubmit]);
+    const { error } = await supabase.from('mentees').insert([{
+      ...dataToSubmit,
+      id: user.id,
+    }]);
 
     if (error) {
       setError(error.message);
     } else {
-      setSuccess(true);
-      setFormData({
-        full_name: '',
-        email: '',
-        phone: '',
-        linked_in: '',
-        current_role: '',
-        current_company: '',
-        education_level: '',
-        experience: '',
-        guidance_type: '',
-        mentorship_topic: '',
-        communication_method: '',
-        timezone: '',
-        bio: '',
-        goals: '',
-        referral_source: '',
-        terms_accepted: false,
-        privacy_accepted: false,
-      });
+      router.push('/dashboard');
     }
 
     setSubmitting(false);

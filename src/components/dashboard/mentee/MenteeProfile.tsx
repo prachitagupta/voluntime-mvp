@@ -5,17 +5,26 @@ import { supabase } from '@/lib/supabaseClient';
 import { timezones } from '@/lib/timezone';
 import { Mentee } from '@/types/Mentee';
 import { getMenteeById } from '@/lib/data';
+import { getCurrentUser } from '@/lib/auth';
 
 export default function MenteeProfile() {
+  const [menteeId, setMenteeId] = useState<string | null>(null);
   const [mentee, setMentee] = useState<Mentee | null>(null);
   const [isSaving, setIsSaving] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState('');
-  const menteeId = '428f7689-225d-4287-8991-a6486e7e9989'; // TODO: remove hardcoded id after auth
 
   useEffect(() => {
     const fetchMentee = async () => {
-      const data = await getMenteeById(menteeId);
+      // Get current user ID
+      const user = await getCurrentUser();
+      if (!user) {
+        return;
+      }
+      
+      setMenteeId(user.id);
+      
+      const data = await getMenteeById(user.id);
       if (data) setMentee(data);
     };
 
@@ -28,6 +37,8 @@ export default function MenteeProfile() {
   };
 
   const handleSubmit = async () => {
+    if (!menteeId) return;
+    
     setIsSaving(true);
     setSuccess(false);
     setError('');
@@ -45,6 +56,10 @@ export default function MenteeProfile() {
 
     setIsSaving(false);
   };
+
+  if (!menteeId) {
+    return <div className="text-center py-8">Loading...</div>;
+  }
 
   if (!mentee) return <p className="text-center py-10 text-gray-600">Loading profile...</p>;
 

@@ -7,10 +7,10 @@ import Link from 'next/link';
 import { Mentor } from '@/types/Mentor';
 import { Booking, BookingStatus } from '@/types/Booking';
 import { getMenteeById, getBookingsByMenteeId, getAllMentors } from '@/lib/data';
-
-const menteeId = '428f7689-225d-4287-8991-a6486e7e9989'; // TODO: remove hardcoded id after auth
+import { getCurrentUser } from '@/lib/auth';
 
 export default function MenteeDashboard() {
+  const [menteeId, setMenteeId] = useState<string | null>(null);
   const [menteeName, setMenteeName] = useState('');
   const [profileComplete, setProfileComplete] = useState(false);
   const [bookings, setBookings] = useState<Booking[]>([]);
@@ -18,8 +18,16 @@ export default function MenteeDashboard() {
 
   useEffect(() => {
     const fetchData = async () => {
+      // Get current user ID
+      const user = await getCurrentUser();
+      if (!user) {
+        return;
+      }
+      
+      setMenteeId(user.id);
+      
       // Get mentee info
-      const mentee = await getMenteeById(menteeId);
+      const mentee = await getMenteeById(user.id);
       if (mentee) {
         setMenteeName(mentee.full_name || ''); 
         // Check if essential fields are filled
@@ -34,7 +42,7 @@ export default function MenteeDashboard() {
       }
 
       // Get bookings
-      const bookingsData = await getBookingsByMenteeId(menteeId);
+      const bookingsData = await getBookingsByMenteeId(user.id);
       const formattedBookings = bookingsData.map((b) => ({
         id: b.id,
         topic: b.topic,
@@ -51,6 +59,10 @@ export default function MenteeDashboard() {
 
     fetchData();
   }, []);
+
+  if (!menteeId) {
+    return <div className="text-center py-8">Loading...</div>;
+  }
 
   return (
     <div className="space-y-10">

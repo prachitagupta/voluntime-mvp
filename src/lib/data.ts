@@ -19,7 +19,12 @@ export async function getMentorById(id: string): Promise<Mentor | null> {
     .single();
 
   if (error) {
-    throw new Error('Failed to fetch mentor');
+    // Handle "not found" errors gracefully
+    if (error.code === 'PGRST116') {
+      return null; // Mentor not found
+    }
+    console.error('Error fetching mentor:', error);
+    return null; // Return null instead of throwing
   }
 
   return data;
@@ -32,7 +37,14 @@ export async function getMenteeById(id: string): Promise<Mentee | null> {
   .eq('id', id)
   .single();
   
-  if (error) throw new Error(error.message);
+  if (error) {
+    // Handle "not found" errors gracefully
+    if (error.code === 'PGRST116') {
+      return null; // Mentee not found
+    }
+    console.error('Error fetching mentee:', error);
+    return null; // Return null instead of throwing
+  }
   return data;
 }
 

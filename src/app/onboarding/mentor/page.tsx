@@ -1,8 +1,10 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { timezones } from '@/lib/timezone';
 import { supabase } from '@/lib/supabaseClient';
+import { useRouter } from 'next/navigation';
+
 
 interface MentorFormData {
     full_name: string;
@@ -18,6 +20,8 @@ interface MentorFormData {
 }
 
 export default function MentorSignupPage() {
+  const router = useRouter();
+
     const [formData, setFormData] = useState<MentorFormData>({
         full_name: '',
         email: '',
@@ -36,6 +40,17 @@ export default function MentorSignupPage() {
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState('');
 
+    useEffect(() => {
+      const fetchUser = async () => {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user?.email) {
+          setFormData((prev) => ({ ...prev, email: user.email! }));
+        }
+      };
+      fetchUser();
+    }, []);
+  
+
     const update = <K extends keyof MentorFormData>(field: K, value: MentorFormData[K]) => {
         setFormData({ ...formData, [field]: value });
     };
@@ -48,33 +63,29 @@ export default function MentorSignupPage() {
     };
 
     const handleSubmit = async () => {
-        setSubmitting(true);
-        setError('');
-        setSuccess(false);
+      setSubmitting(true);
+      setSuccess(false);
+      setError('');
+  
+      const { data: { user } } = await supabase.auth.getUser();
 
-        const { terms_accepted, privacy_accepted, ...dataToSubmit } = formData;
-
-
-        const { error } = await supabase.from('mentors').insert([dataToSubmit]);
-
-        if (error) {
-            setError(error.message);
-        } else {
-            setSuccess(true);
-            setFormData({
-                full_name: '',
-                email: '',
-                linked_in: '',
-                expertise: [],
-                experience: '',
-                timezone: '',
-                terms_accepted: false,
-                privacy_accepted: false,
-                title: '',
-                bio: '',
-            });
-        }
+      if (!user) {
+        setError('No user session found.');
         setSubmitting(false);
+        return;
+      }
+  
+      const { terms_accepted, privacy_accepted, ...dataToSubmit } = formData;
+  
+      const { error } = await supabase.from('mentors').insert([{ id: user.id, ...dataToSubmit }]);
+  
+      if (error) {
+        setError(error.message);
+      } else {
+        router.push('/dashboard');
+      }
+  
+      setSubmitting(false);
     };
 
 
