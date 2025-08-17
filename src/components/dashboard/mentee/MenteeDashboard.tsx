@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { Progress } from '@/components/ui/progress';
-import MentorCard from '@/components/MentorCard';
+import MentorCard from '@/components/mentor-card';
 import Link from 'next/link';
 import { Mentor } from '@/types/Mentor';
 import { Booking, BookingStatus } from '@/types/Booking';
