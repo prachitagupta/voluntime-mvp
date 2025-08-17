@@ -2,7 +2,7 @@
 
 import MentorBookings from '@/components/dashboard/mentor/MentorBookings';
 import MenteeBookings from '@/components/dashboard/mentee/MenteeBookings';
-import { useUserRole } from '../DashboardLayoutClient';
+import { useUserRole } from '@/context/user-role-context';
 
 export default function BookingsPage() {
   const role = useUserRole();

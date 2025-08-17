@@ -1,15 +1,12 @@
+// src/context/UserRoleContext.tsx
 'use client';
 
-import { useEffect, useState, createContext, useContext } from 'react';
-import { ReactNode } from 'react';
-import MenteeSidebar from '@/components/dashboard/mentee/MenteeSidebar';
-import MentorSidebar from '@/components/dashboard/mentor/MentorSidebar';
+import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { getCurrentUser } from '@/lib/auth';
 import { supabase } from '@/lib/supabaseClient';
 
 type UserRole = 'mentor' | 'mentee' | null;
 
-// Create context for user role
 const UserRoleContext = createContext<UserRole | null>(null);
 
 export const useUserRole = () => {
@@ -20,7 +17,7 @@ export const useUserRole = () => {
   return context;
 };
 
-export default function DashboardLayoutClient({ children }: { children: ReactNode }) {
+export const UserRoleProvider = ({ children }: { children: ReactNode }) => {
   const [role, setRole] = useState<UserRole>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -29,14 +26,12 @@ export default function DashboardLayoutClient({ children }: { children: ReactNod
     const checkUserRole = async () => {
       try {
         const user = await getCurrentUser();
-        
         if (!user) {
           setError('No authenticated user found. Please log in.');
           setLoading(false);
           return;
         }
 
-        // Check if user is a mentor
         const { data: mentor } = await supabase
           .from('mentors')
           .select('id')
@@ -46,7 +41,6 @@ export default function DashboardLayoutClient({ children }: { children: ReactNod
         if (mentor) {
           setRole('mentor');
         } else {
-          // Check if user is a mentee
           const { data: mentee } = await supabase
             .from('mentees')
             .select('id')
@@ -56,12 +50,12 @@ export default function DashboardLayoutClient({ children }: { children: ReactNod
           if (mentee) {
             setRole('mentee');
           } else {
-            setError('User profile not found. Please complete your profile setup.');
+            setError('User profile not found. Please complete your profile.');
           }
         }
-      } catch (error) {
-        console.error('Error checking user role:', error);
-        setError('Error detecting user role. Please try again.');
+      } catch (err) {
+        console.error('Error detecting user role:', err);
+        setError('Unexpected error. Try again.');
       } finally {
         setLoading(false);
       }
@@ -124,14 +118,7 @@ export default function DashboardLayoutClient({ children }: { children: ReactNod
 
   return (
     <UserRoleContext.Provider value={role}>
-      <div className="absolute top-16 left-0 right-0 bottom-0 flex bg-gray-50">
-        <aside className="w-64 bg-white shadow-lg border-r border-gray-200 flex-shrink-0">
-          {role === 'mentor' ? <MentorSidebar /> : <MenteeSidebar />}
-        </aside>
-        <main className="flex-1 p-8 overflow-auto">
-          {children}
-        </main>
-      </div>
+      {children}
     </UserRoleContext.Provider>
   );
-}
+};

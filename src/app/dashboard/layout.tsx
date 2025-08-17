@@ -1,8 +1,13 @@
-// app/dashboard/layout.tsx
-
 import { ReactNode } from 'react';
-import DashboardLayoutClient from '@/app/dashboard/DashboardLayoutClient';
+import { UserRoleProvider } from '@/context/user-role-context';
+import DashboardLayout from './dashboard-layout';
 
-export default function DashboardLayout({ children }: { children: ReactNode }) {
-  return <DashboardLayoutClient>{children}</DashboardLayoutClient>;
+export default function DashboardLayoutWrapper({ children }: { children: ReactNode }) {
+  return (
+    <UserRoleProvider>
+      <DashboardLayout>
+        {children}
+      </DashboardLayout>
+    </UserRoleProvider>
+  );
 }

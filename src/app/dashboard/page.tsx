@@ -2,7 +2,7 @@
 
 import MenteeDashboard from '@/components/dashboard/mentee/MenteeDashboard';
 import MentorDashboard from '@/components/dashboard/mentor/MentorDashboard';
-import { useUserRole } from './DashboardLayoutClient';
+import { useUserRole } from '@/context/user-role-context';
 
 export default function DashboardHomePage() {
   const role = useUserRole();

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { getAllMentors } from '@/lib/data';
-import MentorCard from '@/components/MentorCard';
+import MentorCard from '@/components/mentor-card';
 import { Mentor } from '@/types/Mentor';
 
 export default function MentorsPage() {

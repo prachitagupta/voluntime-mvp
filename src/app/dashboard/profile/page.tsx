@@ -2,7 +2,7 @@
 
 import MentorProfile from '@/components/dashboard/mentor/MentorProfile';
 import MenteeProfile from '@/components/dashboard/mentee/MenteeProfile';
-import { useUserRole } from '../DashboardLayoutClient';
+import { useUserRole } from '@/context/user-role-context';
 
 export default function ProfilePage() {
   const role = useUserRole();

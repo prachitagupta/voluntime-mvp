@@ -75,6 +75,28 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
 
 ---
 
+## 📝 Naming Conventions
+
+### **React Components (PascalCase)**
+```
+MentorDashboard.tsx
+MentorSidebar.tsx
+```
+
+### **Utility/Page Files (kebab-case)**
+```
+layout.tsx
+page.tsx
+```
+
+### **Directories (kebab-case)**
+```
+/dashboard
+/mentor
+```
+
+---
+
 ## 📄 License
 
 MIT — free for personal and commercial use.
