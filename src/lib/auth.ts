@@ -18,3 +18,8 @@ export async function getCurrentUser() {
     return null;
   }
 }
+
+export async function logout() {
+  await supabase.auth.signOut();
+  window.location.href = '/';
+}
