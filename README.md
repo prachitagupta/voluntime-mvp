@@ -77,23 +77,10 @@ Open [http://localhost:3000](http://localhost:3000) to view the app.
 
 ## 📝 Naming Conventions
 
-### **React Components (PascalCase)**
-```
-MentorDashboard.tsx
-MentorSidebar.tsx
-```
-
-### **Utility/Page Files (kebab-case)**
-```
-layout.tsx
-page.tsx
-```
-
-### **Directories (kebab-case)**
-```
-/dashboard
-/mentor
-```
+- **React Components**: PascalCase (e.g., `MentorDashboard.tsx`)
+- **Utility/Page Files**: kebab-case (e.g., `dashboard-layout.tsx`)
+- **Directories**: kebab-case (e.g., `/dashboard`, `/mentor`)
+- **Imports**: Use `@/` alias for absolute imports
 
 ---
 
