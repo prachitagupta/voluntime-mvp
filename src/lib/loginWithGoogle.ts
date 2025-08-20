@@ -5,8 +5,8 @@ import { supabase } from './supabaseClient';
 
 export async function loginWithGoogle() {
   const redirectTo = typeof window !== 'undefined' && window.location.origin
-    ? `${window.location.origin}/dashboard`
-    : 'https://voluntime-mvp.vercel.app/dashboard';
+    ? `${window.location.origin}/auth/callback`
+    : 'https://voluntime-mvp.vercel.app/auth/callback';
 
 
   await supabase.auth.signInWithOAuth({
