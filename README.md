@@ -92,7 +92,7 @@ MIT — free for personal and commercial use.
 
 ## 🌐 Live Demo
 
-🚧 Coming soon at [https://voluntime.vercel.app](https://voluntime.vercel.app)
+🚧 [https://voluntime-mvp.vercel.app/](https://voluntime-mvp.vercel.app/)
 
 ---
 
